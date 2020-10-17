@@ -1,0 +1,5 @@
+# filetype: YAML
+# @see doc: https://authors.curseforge.com/knowledge-base/projects/3451-automatic-packaging
+
+package-as: xMerchant
+
