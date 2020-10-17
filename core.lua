@@ -47,8 +47,10 @@ function getCurrentDB()
 	return xMerchantDB and xMerchantDB.global or {}
 end
 
+--@do-not-package@
 -- DONEY
 local ENABLE_DEBUG_DONEY = false;
+--@end-do-not-package@
 local function DONEY_LOGD(msg)
     if (ENABLE_DEBUG_DONEY) then
         DEFAULT_CHAT_FRAME:AddMessage("[xMer][D] "..msg);
@@ -257,25 +259,24 @@ end
 local function CurrencyUpdate()
 	wipe(currencies);
 	
-	local limit = GetCurrencyListSize();
+	-- thanks to @StevieTV for wow 9.0 update
+	local limit = C_CurrencyInfo.GetCurrencyListSize();
 	XMERCHANT_LOGD("[CurrencyUpdate] GetCurrencyListSize  limit: "..limit);
 	
 	for i=1, limit do
-		-- DONEY note for 6.0   the itemID seemes not avail any more, while the http://wowpedia.org/API_GetCurrencyListInfo is out-dated, 2014-10-25
-		local name, isHeader, _, _, _, count, icon, maximum, hasWeeklyLimit, currentWeeklyAmount, _, itemID = GetCurrencyListInfo(i);
-		if ( not isHeader ) then
-			XMERCHANT_LOGD("[CurrencyUpdate]  ".."  name: "..(name or "nil").."  count: "..(count or "nil").."  maxi: "..(maximum or "nil")
-				.."  itemID: "..(itemID or "nil"));
-		end
-		if ( not isHeader and itemID ) then
-			currencies[tonumber(itemID)] = count;
-			-- DONEY fix for 5.0 points
-			if ( not isHeader and itemID and tonumber(itemID) <= 9 ) then
-				currencies[name] = count;
-			end
-		elseif ( not isHeader and not itemID ) then
+		-- DONEY 6.0 http://wowpedia.org/API_GetCurrencyListInfo is out-dated, 2014-10-25
+		-- local name, isHeader, _, _, _, count, icon, maximum, hasWeeklyLimit, currentWeeklyAmount, _, itemID = GetCurrencyListInfo(i);
+		-- DONEY 9.0 thanks to @StevieTV for wow 9.0 update
+		local info = C_CurrencyInfo.GetCurrencyListInfo(i);
+		local name = info.name;
+		local isHeader = info.isHeader;
+		local count = info.quantity;
+		local icon = info.iconFileID;
+		local maximum = info.maxQuantity;
+		local hasWeeklyLimit = info.canEarnPerWeek;
+		local itemID
+		if ( not isHeader and not itemID ) then
 			currencies[name] = count;
-			XMERCHANT_LOGD("[CurrencyUpdate]  ".."  name: "..(name or "nil").."  not itemID");
 		end
 	end
 	
