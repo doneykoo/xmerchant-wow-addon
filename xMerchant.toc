@@ -1,0 +1,14 @@
+## Interface: 80000
+## Title: |cffff00ffNuuh|r|cffffffffMerchant|r
+## Notes: Improved Vendor-Interface
+## Notes-deDE: Verbessertes Haendlerfenster
+## Author: Nils Ruesch
+## X-Email: me@shantalya.de
+## X-Website: http://shantalya.de
+## Version: 1.8.2
+## SavedVariables: xMerchantDB
+## OptionalDeps: DropTheCheapestThing, SellOMatic
+
+localization.lua
+core.lua
+config.lua

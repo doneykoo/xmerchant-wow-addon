@@ -1,0 +1,7 @@
+	xMerchant (World of Warcraft Addon)
+	Copyright (c) 2010-2014, Nils Ruesch(me@shantalya.de)
+	All rights reserved.
+	
+	The original author: Nils Ruesch(me@shantalya.de) has authorized 
+	doneykoo(doneykoo@gmail.com) to setup and manage this project on Curse.
+	
