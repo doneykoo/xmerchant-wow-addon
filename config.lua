@@ -1,7 +1,3 @@
--- if 1 then
---     return
--- end
-
 local ADDON, xMerchant = ...
 local L = xMerchant.L
 local LOGW = xMerchant.LOGW
@@ -68,7 +64,7 @@ function xMerchant.applyOptions()
                 -- DEFAULT_CHAT_FRAME:AddMessage("[xMerchant][Debug] applyOptions  not button at: "..i);
                 break
             end
-            
+
             local fontFileName, fontHeight, flags
             fontFileName, fontHeight, flags = button.itemname:GetFont()
             button.itemname:SetFont(fontFileName, currentDB.itemname_fontsize or defaultDB.itemname_fontsize)
@@ -240,7 +236,7 @@ Options:SetScript("OnShow", function()
     resetButton:SetScript("OnClick", function(self, button, down)
         if button == "LeftButton" then
             resetCurrentDB()
-            
+
             local slider = ItemNameSize
             slider:SetValue(currentDB.itemname_fontsize or defaultDB.itemname_fontsize)
             local slider = ItemInfoSize

@@ -4,13 +4,10 @@ Improved Vendor-Interface Addon for World of Warcraft
 ## CATEGORY
 Auction & Economy
 
-
-# LICENSE
-
-**xMerchant** (World of Warcraft Addon) Copyright (c) 2010-2012, Nils Ruesch(me#shantalya#de) All rights reserved.
-
-The original author: *Nils Ruesch(me#shantalya#de)* has authorized *doneykoo(doneykoo#gmail#com)* to setup and manage this project on Curse.
-
+# README
+README on github:   https://github.com/doneykoo/xmerchant-wow-addon/blob/main/README.md
+Curseforge page:    https://www.curseforge.com/wow/addons/xmerchant
+Former releases:    https://www.curseforge.com/wow/addons/xmerchant/files
 
 # FEATURES
 
@@ -19,9 +16,9 @@ xMerchant improves the Vendor-Interface into an easy and clearly arranged scroll
 * scrollable list, with all selling items.
 * search function, supports inner text of item description.
     * Example: You search items with spell power, then write "spell power" and the list show the relevant items.
-* quick error notice
-    * Example: item require a specific level, or trade-skill, are clearly marked.
-* quick coloring
+* error notice
+    * Example: item require a specific level, or profession, or faction, etc..., are clearly marked.
+* coloring
     * Example: Items which you can't use, will be marked in red and the cause why you can't use this, is displayed.
     * Example: Recipes, that you have not yet learned, are marked green.
 
@@ -50,11 +47,19 @@ Bilder sagen mehr als 1000 Worte. Siehe Bild. :-)
 </p>
 
 
+# LICENSE
+
+**xMerchant** (World of Warcraft Addon) Copyright (c) 2010-2012, Nils Ruesch(me#shantalya#de) All rights reserved.
+
+The original author: *Nils Ruesch(me#shantalya#de)* has authorized *doneykoo(doneykoo#gmail#com)* to setup and manage this project on Curse.
+
+
 # COMMENT
 
 doneykoo:
 xMerchant has revived! This is a great addon, which has brilliant convenient features.
 As granted by author Nils Ruesch, I'll maintain this project and fix possible bugs for future versions.
+
 
 # TO REPORT A BUG / DEFECT
 

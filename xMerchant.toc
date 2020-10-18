@@ -1,11 +1,11 @@
-## Interface: 90000
+## Interface: 90001
 ## Title: |cffff00ffNuuh|r|cffffffffMerchant|r
 ## Notes: Improved Vendor-Interface
 ## Notes-deDE: Verbessertes Haendlerfenster
 ## Author: Nils Ruesch
 ## X-Email: me@shantalya.de
 ## X-Website: http://shantalya.de
-## Version: 1.9.0
+## Version: 1.9.1
 ## SavedVariables: xMerchantDB
 ## OptionalDeps: DropTheCheapestThing, SellOMatic
 

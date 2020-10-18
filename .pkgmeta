@@ -3,3 +3,5 @@
 
 package-as: xMerchant
 
+ignore:
+  - Documents~
