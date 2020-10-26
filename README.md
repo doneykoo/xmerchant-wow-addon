@@ -5,9 +5,9 @@ Improved Vendor-Interface Addon for World of Warcraft
 Auction & Economy
 
 # README
-README on github:   https://github.com/doneykoo/xmerchant-wow-addon/blob/main/README.md
-Curseforge page:    https://www.curseforge.com/wow/addons/xmerchant
-Former releases:    https://www.curseforge.com/wow/addons/xmerchant/files
+README on github:   https://github.com/doneykoo/xmerchant-wow-addon/blob/main/README.md  
+Curseforge page:    https://www.curseforge.com/wow/addons/xmerchant  
+Former releases:    https://www.curseforge.com/wow/addons/xmerchant/files  
 
 # FEATURES
 
