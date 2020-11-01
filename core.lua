@@ -210,8 +210,9 @@ local function FactionsUpdate()
 
         if name~=nil and factionID~=nil then
             -- Patch 5.1.0 Added API GetFriendshipReputation
+            local friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel
             if GetFriendshipReputation~=nil then
-                local friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel = GetFriendshipReputation(factionID)
+                friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel = GetFriendshipReputation(factionID)
             end
 
             local standingLabel
