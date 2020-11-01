@@ -208,7 +208,7 @@ local function FactionsUpdate()
         -- Patch 5.0.4 Added new return value: factionID
         local name, description, standingId, bottomValue, topValue, earnedValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID = GetFactionInfo(factionIndex);
 
-        if name~=nil and factionID~=nil then
+        if name~=nil and factionID~=nil and GetFriendshipReputation~=nil then
             -- Patch 5.1.0 Added API GetFriendshipReputation
             local friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel = GetFriendshipReputation(factionID)
 
@@ -234,7 +234,7 @@ local function CurrencyUpdate()
     wipe(currencies);
 
     -- thanks to @StevieTV for wow 9.0 update
-    local limit = C_CurrencyInfo.GetCurrencyListSize();
+    local limit = C_CurrencyInfo and C_CurrencyInfo.GetCurrencyListSize() or 0;
     XMERCHANT_LOGD("[CurrencyUpdate] GetCurrencyListSize  limit: "..limit);
 
     for i=1, limit do
