@@ -210,7 +210,9 @@ local function FactionsUpdate()
 
         if name~=nil and factionID~=nil then
             -- Patch 5.1.0 Added API GetFriendshipReputation
-            local friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel = GetFriendshipReputation(factionID)
+            if GetFriendshipReputation~=nil then
+                local friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel = GetFriendshipReputation(factionID)
+            end
 
             local standingLabel
             if isHeader == nil then
@@ -234,7 +236,7 @@ local function CurrencyUpdate()
     wipe(currencies);
 
     -- thanks to @StevieTV for wow 9.0 update
-    local limit = C_CurrencyInfo.GetCurrencyListSize();
+    local limit = C_CurrencyInfo and C_CurrencyInfo.GetCurrencyListSize() or 0;
     XMERCHANT_LOGD("[CurrencyUpdate] GetCurrencyListSize  limit: "..limit);
 
     for i=1, limit do
