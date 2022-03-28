@@ -2,7 +2,7 @@
 ##classic Interface: 11304
 ##bcc Interface: 20504
 ## Interface: 20504
-## Title: |cffff00ffNuuh|r|cffffffffMerchant|r
+## Title: |cffff00ffNuuh|r |cffffffffxMerchant|r
 ## Notes: Improved Vendor-Interface
 ## Notes-deDE: Verbessertes Haendlerfenster
 ## Author: Nils Ruesch
