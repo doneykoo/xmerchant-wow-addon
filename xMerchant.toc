@@ -8,7 +8,7 @@
 ## Author: Nils Ruesch
 ## X-Email: me@shantalya.de
 ## X-Website: http://shantalya.de
-## Version: 1.9.2
+## Version: 1.9.3
 ## SavedVariables: xMerchantDB
 ## OptionalDeps: DropTheCheapestThing, SellOMatic
 
