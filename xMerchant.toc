@@ -1,5 +1,5 @@
 ## Interface: 90001
-## Title: |cffff00ffNuuh|r|cffffffffMerchant|r
+## Title: |cffff00ffNuuh|r |cffffffffxMerchant|r
 ## Notes: Improved Vendor-Interface
 ## Notes-deDE: Verbessertes Haendlerfenster
 ## Author: Nils Ruesch
