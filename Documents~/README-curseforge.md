@@ -24,11 +24,9 @@ xMerchant improves the Vendor-Interface into an easy and clearly arranged scroll
 
 But a picture is better than words: See picture :-)
 
-<p align="center">
-<img src="Documents~/2017-06-29-01-04-05.png"/>
-<img src="Documents~/2017-06-29-00-59-54.png"/>
-<img src="Documents~/2017-06-29-00-59-04.png"/>
-</p>
+![Image 2017-06-29-01-04-05.png](https://raw.githubusercontent.com/doneykoo/xmerchant-wow-addon/main/Documents%7E/2017-06-29-01-04-05.png)
+![Image 2017-06-29-00-59-54.png](https://raw.githubusercontent.com/doneykoo/xmerchant-wow-addon/main/Documents%7E/2017-06-29-00-59-54.png)
+![Image 2017-06-29-00-59-04.png](https://raw.githubusercontent.com/doneykoo/xmerchant-wow-addon/main/Documents%7E/2017-06-29-00-59-04.png)
 
 ## [German]
 xMerchant verbessert das Händler-Interface in ein einfaches und übersichtliches Scroll-Fenster. Desweiteren wird eine Suchfunktion hinzugefügt. Sucht man (als Beispiel) Gegenstände die Zaubermacht haben, so gibt man 'Zaubermacht' ein und erhält genau diese.
@@ -40,11 +38,9 @@ Bilder sagen mehr als 1000 Worte. Siehe Bild. :-)
 
 # More Showcases
 
-<p align="center">
-<img src="Documents~/2012-09-22_19-22-33.jpg"/>
-<img src="Documents~/2014-06-18_10-01-01.jpg"/>
-<img src="Documents~/2012-09-28_02-24-32.jpg"/>
-</p>
+![Image 2012-09-22_19-22-33.jpg](https://raw.githubusercontent.com/doneykoo/xmerchant-wow-addon/main/Documents%7E/2012-09-22_19-22-33.jpg)
+![Image 2014-06-18_10-01-01.jpg](https://raw.githubusercontent.com/doneykoo/xmerchant-wow-addon/main/Documents%7E/2014-06-18_10-01-01.jpg)
+![Image 2012-09-28_02-24-32.jpg](https://raw.githubusercontent.com/doneykoo/xmerchant-wow-addon/main/Documents%7E/2012-09-28_02-24-32.jpg)
 
 
 # LICENSE
