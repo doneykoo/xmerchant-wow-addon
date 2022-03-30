@@ -28,6 +28,18 @@ local SKILL = L["%1$s (%2$d)"];
 local REQUIRES = L["Requires (.+)"];
 local tooltip = CreateFrame("GameTooltip", "NuuhMerchantTooltip", UIParent, "GameTooltipTemplate");
 
+local wow_ver
+if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
+    -- vanilla
+    wow_ver = 10
+elseif WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
+    -- tbc
+    wow_ver = 20
+else
+    -- mainline
+    wow_ver = 90
+end
+
 function getCurrentDB()
     return xMerchantDB and xMerchantDB.global or {}
 end
@@ -808,12 +820,20 @@ search:SetScript("OnEditFocusLost", OnEditFocusLost);
 search:SetScript("OnEditFocusGained", OnEditFocusGained);
 search:SetText(SEARCH);
 
+local function PlayCheckBoxSound(on)
+    if wow_ver < 73 then
+        PlaySound(on and "igMainMenuOptionCheckBoxOn" or "igMainMenuOptionCheckBoxOff")
+    else
+        PlaySound(on and SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF)
+    end
+end
+
 local function Search_OnClick(self)
     if ( self:GetChecked() ) then
-        PlaySound("igMainMenuOptionCheckBoxOn");
+        PlayCheckBoxSound(true);
         frame.tooltipsearching = 1;
     else
-        PlaySound("igMainMenuOptionCheckBoxOff");
+        PlayCheckBoxSound(false);
         frame.tooltipsearching = nil;
     end
     if ( searching ~= "" and searching ~= SEARCH:lower() ) then
