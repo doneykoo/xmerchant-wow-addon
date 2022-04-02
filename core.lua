@@ -251,7 +251,7 @@ local function CurrencyUpdate()
     wipe(currencies);
 
     -- thanks to @StevieTV for wow 9.0 update
-    local limit = C_CurrencyInfo.GetCurrencyListSize and C_CurrencyInfo.GetCurrencyListSize() or 0;
+    local limit = C_CurrencyInfo and C_CurrencyInfo.GetCurrencyListSize and C_CurrencyInfo.GetCurrencyListSize() or 0;
     XMERCHANT_LOGD("[CurrencyUpdate] GetCurrencyListSize  limit: "..limit);
 
     for i=1, limit do
