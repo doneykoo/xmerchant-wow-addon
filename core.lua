@@ -40,9 +40,11 @@ else
     wow_ver = 90
 end
 
-function getCurrentDB()
+-- get DB of config
+function xMerchant.getCurrentDB()
     return xMerchantDB and xMerchantDB.global or {}
 end
+local GetCurrentDB = xMerchant.getCurrentDB
 
 --@do-not-package@
 -- DONEY
@@ -249,7 +251,7 @@ local function CurrencyUpdate()
     wipe(currencies);
 
     -- thanks to @StevieTV for wow 9.0 update
-    local limit = C_CurrencyInfo and C_CurrencyInfo.GetCurrencyListSize() or 0;
+    local limit = C_CurrencyInfo and C_CurrencyInfo.GetCurrencyListSize and C_CurrencyInfo.GetCurrencyListSize() or 0;
     XMERCHANT_LOGD("[CurrencyUpdate] GetCurrencyListSize  limit: "..limit);
 
     for i=1, limit do
@@ -611,10 +613,10 @@ local function xScrollFrame_OnVerticalScroll(self, offset)
     local current_offset_n = FauxScrollFrame_GetOffset(self);
     local offset_n = (offset >= 0 and 1 or -1) * math.floor(math.abs(offset) / xMerchant.kItemButtonHeight + 0.1);
     local changed_n = offset_n - current_offset_n
-    if getCurrentDB().scroll_limit_enabled then
-        if changed_n > getCurrentDB().scroll_limit_amount or changed_n < -getCurrentDB().scroll_limit_amount then
-            changed_n = math.min(changed_n, getCurrentDB().scroll_limit_amount)
-            changed_n = math.max(changed_n, -getCurrentDB().scroll_limit_amount)
+    if GetCurrentDB().scroll_limit_enabled then
+        if changed_n > GetCurrentDB().scroll_limit_amount or changed_n < -GetCurrentDB().scroll_limit_amount then
+            changed_n = math.min(changed_n, GetCurrentDB().scroll_limit_amount)
+            changed_n = math.max(changed_n, -GetCurrentDB().scroll_limit_amount)
             offset_n = (current_offset_n + changed_n)
             offset = (offset_n > 0.1 and (offset_n - 0.1) or 0) * xMerchant.kItemButtonHeight
         end
@@ -908,8 +910,8 @@ local function xMerchant_InitItemsButtons()
         highlight:SetTexture("Interface\\Buttons\\UI-Listbox-Highlight2");
         highlight:Hide();
 
-        local itemname_fontsize = getCurrentDB().itemname_fontsize or 15
-        local iteminfo_fontsize = getCurrentDB().iteminfo_fontsize or 12
+        local itemname_fontsize = GetCurrentDB().itemname_fontsize or 15
+        local iteminfo_fontsize = GetCurrentDB().iteminfo_fontsize or 12
 
         local itemname = button:CreateFontString("ARTWORK", "$parentItemName");
         button.itemname = itemname;
