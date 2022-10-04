@@ -1,5 +1,4 @@
 ##retail Interface: 80300
-##classic: WotLK
 ## Interface: 30400
 ## Title: |cffff00ffNuuh|r |cffffffffxMerchant|r
 ## Notes: Improved Vendor-Interface
