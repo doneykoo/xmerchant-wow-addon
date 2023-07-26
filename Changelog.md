@@ -1,5 +1,9 @@
 
 ## 1.10 (Latest)
+1.10.2
+* fix: error from API changes of Wotlk (Wrath of the Lich King) （#6)
+* fix: lua error when enabled the search in tooltip checkbox (#8)
+
 1.10.1
 * docs: add docs of changelog, and dev guideline
 
