@@ -6,6 +6,23 @@
 
 ]]
 
+local wow_ver
+local wowapi_ver = 100
+-- @see: https://wowpedia.fandom.com/wiki/WOW_PROJECT_ID
+if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
+    -- vanilla
+    wow_ver = 10
+elseif WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
+    -- tbc
+    wow_ver = 20
+elseif WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC then
+    -- wlk
+    wow_ver = 30
+else
+    -- mainline
+    wow_ver = 100
+end
+
 local addonName, xMerchant = ...;
 local L = xMerchant.L;
 local buttons = {};
@@ -14,11 +31,13 @@ local errors = {};
 local factions = {};
 local currencies = {};
 local searching = "";
-local RECIPE = GetItemClassInfo(LE_ITEM_CLASS_RECIPE); -- new API 7.0
+
+local RECIPE = GetItemClassInfo(Enum.ItemClass.Recipe); -- new enum 10.0
 --[[
-@see: https://github.com/tomrus88/BlizzardInterfaceCode/blob/master/Interface/AddOns/Blizzard_AuctionHouseUI/Blizzard_AuctionData.lua
-LE_ITEM_CLASS_RECIPE
+@see: https://wowpedia.fandom.com/wiki/ItemType
+Enum.ItemClass.Recipe
 ]]
+
 local REQUIRES_LEVEL = L["Requires Level (%d+)"];
 local LEVEL = L["Level %d"];
 local REQUIRES_REPUTATION = L["Requires .+ %- (.+)"];
@@ -26,19 +45,8 @@ local REQUIRES_REPUTATION_NAME = L["Requires (.+) %- .+"];
 local REQUIRES_SKILL = L["Requires (.+) %((%d+)%)"];
 local SKILL = L["%1$s (%2$d)"];
 local REQUIRES = L["Requires (.+)"];
-local tooltip = CreateFrame("GameTooltip", "NuuhMerchantTooltip", UIParent, "GameTooltipTemplate");
 
-local wow_ver
-if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
-    -- vanilla
-    wow_ver = 10
-elseif WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
-    -- tbc
-    wow_ver = 20
-else
-    -- mainline
-    wow_ver = 90
-end
+local tooltip = CreateFrame("GameTooltip", "NuuhMerchantTooltip", UIParent, "GameTooltipTemplate");
 
 -- get DB of config
 function xMerchant.getCurrentDB()
@@ -226,7 +234,7 @@ local function FactionsUpdate()
             -- Patch 5.1.0 Added API GetFriendshipReputation
             local friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel
             if GetFriendshipReputation~=nil then
-                friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel = GetFriendshipReputation(factionID)
+                friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel = C_GossipInfo.GetFriendshipReputation(factionID)
             end
 
             local standingLabel
@@ -282,11 +290,11 @@ local function CurrencyUpdate()
     end
 
     for bagID=0, NUM_BAG_SLOTS, 1 do
-        local numSlots = GetContainerNumSlots(bagID);
+        local numSlots = C_Container.GetContainerNumSlots(bagID);
         for slotID=1, numSlots, 1 do
-            local itemID = GetContainerItemID(bagID, slotID);
+            local itemID = C_Container.GetContainerItemID(bagID, slotID);
             if ( itemID ) then
-                local count = select(2, GetContainerItemInfo(bagID, slotID));
+                local count = select(2, C_Container.GetContainerItemInfo(bagID, slotID));
                 itemID = tonumber(itemID);
                 local currency = currencies[itemID];
                 if ( currency ) then
@@ -821,7 +829,7 @@ search:SetScript("OnEditFocusGained", OnEditFocusGained);
 search:SetText(SEARCH);
 
 local function PlayCheckBoxSound(on)
-    if wow_ver < 73 then
+    if wow_ver < 73 and wowapi_ver < 100 then
         PlaySound(on and "igMainMenuOptionCheckBoxOn" or "igMainMenuOptionCheckBoxOff")
     else
         PlaySound(on and SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF)
@@ -847,7 +855,7 @@ local function Search_OnEnter(self)
     GameTooltip:SetText(L["To browse item tooltips, too"]);
 end
 
-local tooltipsearching = CreateFrame("CheckButton", "$parentTooltipSearching", frame, "InterfaceOptionsSmallCheckButtonTemplate");
+local tooltipsearching = CreateFrame("CheckButton", "$parentTooltipSearching", frame, "InterfaceOptionsCheckButtonTemplate");
 search.tooltipsearching = tooltipsearching;
 tooltipsearching:SetWidth(24);
 tooltipsearching:SetHeight(24);
@@ -913,7 +921,7 @@ local function xMerchant_InitItemsButtons()
         local itemname_fontsize = GetCurrentDB().itemname_fontsize or 15
         local iteminfo_fontsize = GetCurrentDB().iteminfo_fontsize or 12
 
-        local itemname = button:CreateFontString("ARTWORK", "$parentItemName");
+        local itemname = button:CreateFontString("$parentItemName", "ARTWORK");
         button.itemname = itemname;
         itemname:SetFont(GameFontHighlight:GetFont(), itemname_fontsize)
         itemname:SetPoint("TOPLEFT", 30.4, -1);
@@ -921,7 +929,7 @@ local function xMerchant_InitItemsButtons()
         itemname:SetJustifyV("TOP");
         itemname:SetWordWrap(false)
 
-        local iteminfo = button:CreateFontString("ARTWORK", "$parentItemInfo");
+        local iteminfo = button:CreateFontString("$parentItemInfo", "ARTWORK");
         button.iteminfo = iteminfo;
         iteminfo:SetFont(GameFontNormal:GetFont(), iteminfo_fontsize)
         iteminfo:SetPoint("TOPLEFT", itemname, "BOTTOMLEFT", 10, 0);
@@ -938,12 +946,12 @@ local function xMerchant_InitItemsButtons()
         icon:SetTexture("Interface\\Icons\\temp");
 
         -- DONEY todo?
-        -- local itemlevel = button:CreateFontString("ARTWORK", "$parentItemName", "GameFontNormal");
+        -- local itemlevel = button:CreateFontString("$parentItemName", "ARTWORK", "GameFontNormal");
         -- button.itemlevel = itemlevel;
         -- itemlevel:SetPoint("BOTTOMLEFT", 1.0, -3);
         -- itemlevel:SetJustifyH("LEFT");
 
-        local money = button:CreateFontString("ARTWORK", "$parentMoney");
+        local money = button:CreateFontString("$parentMoney", "ARTWORK");
         button.money = money;
         money:SetFontObject(GameFontHighlight)
         money:SetPoint("RIGHT", -2, 0);
@@ -975,7 +983,7 @@ local function xMerchant_InitItemsButtons()
             icon:SetHeight(17);
             icon:SetPoint("RIGHT");
 
-            local count = item:CreateFontString("ARTWORK", "$parentCount", "GameFontHighlight");
+            local count = item:CreateFontString("$parentCount", "ARTWORK", "GameFontHighlight");
             item.count = count;
             count:SetPoint("RIGHT", icon, "LEFT", -2, 0);
         end
@@ -999,7 +1007,7 @@ local function xMerchant_InitItemsButtons()
         icon:SetHeight(17);
         icon:SetPoint("RIGHT");
 
-        local count = honor:CreateFontString("ARTWORK", "$parentCount", "GameFontHighlight");
+        local count = honor:CreateFontString("$parentCount", "ARTWORK", "GameFontHighlight");
         honor.count = count;
         count:SetPoint("RIGHT", icon, "LEFT", -2, 0);
 
@@ -1022,7 +1030,7 @@ local function xMerchant_InitItemsButtons()
         icon:SetHeight(17);
         icon:SetPoint("RIGHT");
 
-        local count = arena:CreateFontString("ARTWORK", "$parentCount", "GameFontHighlight");
+        local count = arena:CreateFontString("$parentCount", "ARTWORK", "GameFontHighlight");
         arena.count = count;
         count:SetPoint("RIGHT", icon, "LEFT", -2, 0);
 
