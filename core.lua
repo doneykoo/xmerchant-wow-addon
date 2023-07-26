@@ -7,6 +7,7 @@
 ]]
 
 local wow_ver
+local wowapi_ver = 100
 -- @see: https://wowpedia.fandom.com/wiki/WOW_PROJECT_ID
 if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
     -- vanilla
@@ -828,7 +829,7 @@ search:SetScript("OnEditFocusGained", OnEditFocusGained);
 search:SetText(SEARCH);
 
 local function PlayCheckBoxSound(on)
-    if wow_ver < 73 then
+    if wow_ver < 73 and wowapi_ver < 100 then
         PlaySound(on and "igMainMenuOptionCheckBoxOn" or "igMainMenuOptionCheckBoxOff")
     else
         PlaySound(on and SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF)
