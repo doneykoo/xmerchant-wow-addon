@@ -38,6 +38,13 @@ local RECIPE = GetItemClassInfo(Enum.ItemClass.Recipe); -- new enum 10.0
 Enum.ItemClass.Recipe
 ]]
 
+local GetContainerNumSlots = GetContainerNumSlots or C_Container.GetContainerNumSlots
+local GetContainerItemID = GetContainerItemID or C_Container.GetContainerItemID
+local GetContainerItemInfo = GetContainerItemInfo or C_Container.GetContainerItemInfo
+local GetContainerItemLink = GetContainerItemLink or C_Container.GetContainerItemLink
+
+local GetFriendshipReputation = GetFriendshipReputation or C_GossipInfo.GetFriendshipReputation
+
 local REQUIRES_LEVEL = L["Requires Level (%d+)"];
 local LEVEL = L["Level %d"];
 local REQUIRES_REPUTATION = L["Requires .+ %- (.+)"];
@@ -55,14 +62,13 @@ end
 local GetCurrentDB = xMerchant.getCurrentDB
 
 --@do-not-package@
--- DONEY
 local ENABLE_DEBUG_DONEY = false;
---@end-do-not-package@
 local function DONEY_LOGD(msg)
     if (ENABLE_DEBUG_DONEY) then
         DEFAULT_CHAT_FRAME:AddMessage("[xMer][D] "..msg);
     end
 end
+--@end-do-not-package@
 
 
 -- DONEY
@@ -234,7 +240,7 @@ local function FactionsUpdate()
             -- Patch 5.1.0 Added API GetFriendshipReputation
             local friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel
             if GetFriendshipReputation~=nil then
-                friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel = C_GossipInfo.GetFriendshipReputation(factionID)
+                friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel = GetFriendshipReputation(factionID)
             end
 
             local standingLabel
@@ -290,11 +296,11 @@ local function CurrencyUpdate()
     end
 
     for bagID=0, NUM_BAG_SLOTS, 1 do
-        local numSlots = C_Container.GetContainerNumSlots(bagID);
+        local numSlots = GetContainerNumSlots(bagID);
         for slotID=1, numSlots, 1 do
-            local itemID = C_Container.GetContainerItemID(bagID, slotID);
+            local itemID = GetContainerItemID(bagID, slotID);
             if ( itemID ) then
-                local count = select(2, C_Container.GetContainerItemInfo(bagID, slotID));
+                local count = select(2, GetContainerItemInfo(bagID, slotID));
                 itemID = tonumber(itemID);
                 local currency = currencies[itemID];
                 if ( currency ) then

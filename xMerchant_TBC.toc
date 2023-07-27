@@ -1,11 +1,11 @@
-##retail Interface: 100100
+##mainline Interface: DragonFlight patch 10.1.5
 ## Interface: 20504
-## Title: |cffff00ffNuuh|r |cffffffffxMerchant|r
-## Notes: Improved Vendor-Interface
-## Notes-deDE: Verbessertes Haendlerfenster
+## Title: xMerchant
+## Notes: |cffff00ffNuuh|r Improved Vendor-Interface.  |r|nProvides various quality-of-life features during buying items.  |r|n@see `xMerchant` on curse.  |r|n@see `xmerchant-wow-addon` on github.
+## Notes-deDE: |cffff00ffNuuh|r Verbessertes Haendlerfenster
 ## Author: Nils Ruesch, doneykoo
 ## X-Website: https://shantalya.de, https://github.com/doneykoo/xmerchant-wow-addon
-## Version: 1.10.2
+## Version: 1.10.3
 ## SavedVariables: xMerchantDB
 ## OptionalDeps: DropTheCheapestThing, SellOMatic
 
