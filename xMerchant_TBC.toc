@@ -1,0 +1,14 @@
+##retail Interface: 100100
+## Interface: 20504
+## Title: |cffff00ffNuuh|r |cffffffffxMerchant|r
+## Notes: Improved Vendor-Interface
+## Notes-deDE: Verbessertes Haendlerfenster
+## Author: Nils Ruesch, doneykoo
+## X-Website: https://shantalya.de, https://github.com/doneykoo/xmerchant-wow-addon
+## Version: 1.10.2
+## SavedVariables: xMerchantDB
+## OptionalDeps: DropTheCheapestThing, SellOMatic
+
+localization.lua
+core.lua
+config.lua

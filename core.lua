@@ -7,6 +7,7 @@
 ]]
 
 local wow_ver
+local wowapi_ver = 100
 -- @see: https://wowpedia.fandom.com/wiki/WOW_PROJECT_ID
 if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
     -- vanilla
@@ -53,6 +54,10 @@ function xMerchant.getCurrentDB()
 end
 local GetCurrentDB = xMerchant.getCurrentDB
 
+--@do-not-package@
+-- DONEY
+local ENABLE_DEBUG_DONEY = false;
+--@end-do-not-package@
 local function DONEY_LOGD(msg)
     if (ENABLE_DEBUG_DONEY) then
         DEFAULT_CHAT_FRAME:AddMessage("[xMer][D] "..msg);
@@ -227,7 +232,10 @@ local function FactionsUpdate()
 
         if name~=nil and factionID~=nil then
             -- Patch 5.1.0 Added API GetFriendshipReputation
-            local friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel = C_GossipInfo.GetFriendshipReputation(factionID)
+            local friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel
+            if GetFriendshipReputation~=nil then
+                friendID, friendRep, friendMaxRep, friendName, friendText, friendTexture, friendTextLevel = C_GossipInfo.GetFriendshipReputation(factionID)
+            end
 
             local standingLabel
             if isHeader == nil then
@@ -328,18 +336,18 @@ end
 local function UpdateAltCurrency(button, index, i)
     local currency_frames = {};
     local lastFrame;
-    local honorPoints, arenaPoints, itemCount = GetMerchantItemCostInfo(index);
-
-    if ( select(4, GetBuildInfo()) >= 40000 ) then
-        itemCount, honorPoints, arenaPoints = honorPoints, 0, 0;
-    end
+    -- local honorPoints, arenaPoints, itemCount = GetMerchantItemCostInfo(index);
+    -- if ( select(4, GetBuildInfo()) >= 40000 ) then
+    --     itemCount, honorPoints, arenaPoints = honorPoints, 0, 0;
+    -- end
+    local itemCount, honorPoints, arenaPoints = GetMerchantItemCostInfo(index), 0, 0;
 
     if ( itemCount > 0 ) then
-        for i=1, MAX_ITEM_COST, 1 do
-            local itemTexture, itemValue, itemLink, currencyName = GetMerchantItemCostItem(index, i);
-            local item = button.item[i];
+        for j=1, MAX_ITEM_COST, 1 do
+            local itemTexture, itemValue, itemLink, currencyName = GetMerchantItemCostItem(index, j);
+            local item = button.item[j];
             item.index = index;
-            item.item = i;
+            item.item = j;
             if( currencyName ) then
                 item.pointType = "Beta";
                 item.itemLink = currencyName;
@@ -349,8 +357,8 @@ local function UpdateAltCurrency(button, index, i)
             end
 
             -- DONEY
-            if i == 1 then
-                XMERCHANT_LOGD("[AltCurrency]  ".."  index: "..(index or "nil").."  itemLink: "..(itemLink or "nil").."  i: "..(i or "nil"));
+            if j == 1 then
+                XMERCHANT_LOGD("[AltCurrency]  ".."  index: "..(index or "nil").."  itemLink: "..(itemLink or "nil").."  j: "..(j or "nil"));
             end
             local itemID = tonumber((itemLink or "item:0"):match("item:(%d+)"));
             AltCurrencyFrame_Update(item, itemTexture, itemValue, itemID, currencyName);
@@ -359,14 +367,14 @@ local function UpdateAltCurrency(button, index, i)
                 item:Hide();
             else
                 lastFrame = item;
-                lastFrame._dbg_name = "item"..i
+                lastFrame._dbg_name = "item"..j
                 table.insert(currency_frames, item)
                 item:Show();
             end
         end
     else
-        for i=1, MAX_ITEM_COST, 1 do
-            button.item[i]:Hide();
+        for j=1, MAX_ITEM_COST, 1 do
+            button.item[j]:Hide();
         end
     end
 
@@ -461,6 +469,7 @@ local function MerchantUpdate()
         local offset = i+FauxScrollFrame_GetOffset(self.scrollframe);
         local button = buttons[i];
         button.hover = nil;
+
         if ( offset <= numMerchantItems ) then
             --API name, texture, price, quantity, numAvailable, isUsable, extendedCost = GetMerchantItemInfo(index)
             local name, texture, price, quantity, numAvailable, isUsable, extendedCost = GetMerchantItemInfo(offset);
@@ -826,7 +835,7 @@ search:SetScript("OnEditFocusGained", OnEditFocusGained);
 search:SetText(SEARCH);
 
 local function PlayCheckBoxSound(on)
-    if wow_ver < 73 then
+    if wow_ver < 73 and wowapi_ver < 100 then
         PlaySound(on and "igMainMenuOptionCheckBoxOn" or "igMainMenuOptionCheckBoxOff")
     else
         PlaySound(on and SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF)
