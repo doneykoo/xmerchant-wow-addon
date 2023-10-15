@@ -1,3 +1,6 @@
+1.10.4
+* fix: lua error when have two gear in different ilvl in the bag (#9).
+
 1.10.3
 * chore: Fixed compatible issues for multi wow patches. Merged branches into `main`.
 

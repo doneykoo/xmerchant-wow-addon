@@ -300,7 +300,11 @@ local function CurrencyUpdate()
         for slotID=1, numSlots, 1 do
             local itemID = GetContainerItemID(bagID, slotID);
             if ( itemID ) then
-                local count = select(2, GetContainerItemInfo(bagID, slotID));
+                local itemInfo, count = select(1, GetContainerItemInfo(bagID, slotID));
+                if type(itemInfo) == "table" then
+                    count = itemInfo.stackCount;
+                end
+                count = count or 1
                 itemID = tonumber(itemID);
                 local currency = currencies[itemID];
                 if ( currency ) then
