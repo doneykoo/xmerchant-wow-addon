@@ -1,3 +1,6 @@
+1.10.5
+* chore: Update for Cataclysm Classic (#10)
+
 1.10.4
 * fix: lua error when have two gear in different ilvl in the bag (#9).
 
