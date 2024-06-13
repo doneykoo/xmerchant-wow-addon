@@ -1,3 +1,6 @@
+1.10.6
+* chore: toc Interface update 30403 for Wotlk classic
+
 1.10.5
 * chore: Update for Cataclysm Classic (#10)
 
