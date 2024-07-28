@@ -24,9 +24,9 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Version:**
- - wow [e.g. 9.0]
- - Server locale region [e.g. US, CN]
- - OS [e.g. Win, Mac]
+ - wow: [e.g. Shadowlands 9.0]
+ - Server locale region: [e.g. US, CN]
+ - OS: [e.g. Win, Mac]
 
 
 **Additional context**
