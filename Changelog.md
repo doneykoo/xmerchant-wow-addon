@@ -1,3 +1,6 @@
+1.10.7
+* fix: PVP honor gears (and similar currencies) price color incorrect, always red even if has enough to buy. (#12)
+
 1.10.6
 * chore: toc Interface update 30403 for Wotlk classic
 

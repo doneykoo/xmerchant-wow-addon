@@ -71,7 +71,6 @@ end
 --@end-do-not-package@
 
 
--- DONEY
 local XMERCHANT_DEBUG_TAGS = {};
 XMERCHANT_DEBUG_TAGS["[GetError]"] = 0;
 XMERCHANT_DEBUG_TAGS["[GetKnown]"] = 0;
@@ -82,7 +81,9 @@ XMERCHANT_DEBUG_TAGS["[FactionsUpdate]"] = 0;
 XMERCHANT_DEBUG_TAGS["[Faction]"] = 0;
 XMERCHANT_DEBUG_TAGS["[MerchantItemInfo]"] = 0;
 
--- DONEY
+local function LOGSTR(vname, v)
+    return " "..vname..": "..(v and tostring(v) or "")
+end
 local function XMERCHANT_LOGD(msg)
     if (ENABLE_DEBUG_DONEY) then
         local pos = strfind(msg, " ");
@@ -317,10 +318,28 @@ local function CurrencyUpdate()
     end
 end
 
-local function AltCurrencyFrame_Update(item, texture, cost, itemID, currencyName)
-    if ( itemID ~= 0 or currencyName) then
-        local currency = currencies[itemID] or currencies[currencyName];
-        if ( currency and currency < cost or not currency ) then
+local function AltCurrencyFrame_Update(item, texture, cost, itemID, currencyName, currencyID)
+    item.cost = cost
+    item.hasCount = nil
+    if ( currencyID and currencyID ~= 0) then
+        -- https://wowpedia.fandom.com/wiki/API_C_CurrencyInfo.GetCurrencyInfo
+        local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(currencyID) or nil
+        local hasCount = currencyInfo and currencyInfo.quantity or nil
+        item.hasCount = hasCount
+        if ( cost > 0 and (not currencyInfo or not hasCount or hasCount < cost) ) then
+            item.count:SetTextColor(1, 0, 0);
+        else
+            item.count:SetTextColor(1, 1, 1);
+        end
+    elseif ( itemID ~= 0 or currencyName) then
+        local hasCount = currencies[itemID] or currencies[currencyName];
+        item.hasCount = hasCount
+        -- XMERCHANT_LOGD("[AltCurrency]  "
+        --     ..LOGSTR("itemID", itemID)
+        --     ..LOGSTR("currencyName", currencyName)
+        --     ..LOGSTR("hasCount", hasCount)
+        -- );
+        if ( cost > 0 and (not hasCount or hasCount < cost) ) then
             item.count:SetTextColor(1, 0, 0);
         else
             item.count:SetTextColor(1, 1, 1);
@@ -343,35 +362,45 @@ local function AltCurrencyFrame_Update(item, texture, cost, itemID, currencyName
     item:SetHeight(item.count:GetHeight() + 4);
 end
 
-local function UpdateAltCurrency(button, index, i)
+local function UpdateAltCurrencyV2(button, index, i, link)
     local currency_frames = {};
     local lastFrame;
-    -- local honorPoints, arenaPoints, itemCount = GetMerchantItemCostInfo(index);
-    -- if ( select(4, GetBuildInfo()) >= 40000 ) then
-    --     itemCount, honorPoints, arenaPoints = honorPoints, 0, 0;
-    -- end
     local itemCount, honorPoints, arenaPoints = GetMerchantItemCostInfo(index), 0, 0;
+    -- XMERCHANT_LOGD("[AltCurrency] CurrencyV2")
+    -- XMERCHANT_LOGD("[AltCurrency] Currency"
+    --     ..LOGSTR("link", link)
+    --     ..LOGSTR("itemCount", itemCount)
+    --     ..LOGSTR("honorPoints", honorPoints)
+    -- );
 
     if ( itemCount > 0 ) then
         for j=1, MAX_ITEM_COST, 1 do
+            -- https://wowpedia.fandom.com/wiki/API_GetMerchantItemCostItem
             local itemTexture, itemValue, itemLink, currencyName = GetMerchantItemCostItem(index, j);
             local item = button.item[j];
+            local itemID = tonumber((itemLink or "item:0"):match("item:(%d+)"));
+            local currencyID = tonumber((itemLink or "currency:0"):match("currency:(%d+)"));
             item.index = index;
             item.item = j;
             if( currencyName ) then
                 item.pointType = "Beta";
-                item.itemLink = currencyName;
+                item.itemLink = itemLink or currencyName;
             else
                 item.pointType = nil;
                 item.itemLink = itemLink;
             end
 
-            -- DONEY
-            if j == 1 then
-                XMERCHANT_LOGD("[AltCurrency]  ".."  index: "..(index or "nil").."  itemLink: "..(itemLink or "nil").."  j: "..(j or "nil"));
-            end
-            local itemID = tonumber((itemLink or "item:0"):match("item:(%d+)"));
-            AltCurrencyFrame_Update(item, itemTexture, itemValue, itemID, currencyName);
+            -- if j == 1 then
+            --     XMERCHANT_LOGD("[AltCurrency] V2"
+            --         ..LOGSTR("index", index)
+            --         ..LOGSTR("link", link)
+            --         ..LOGSTR("itemLink", itemLink)
+            --         ..LOGSTR("j", j)
+            --         ..LOGSTR("itemID", itemID)
+            --         ..LOGSTR("currencyID", currencyID)
+            --     );
+            -- end
+            AltCurrencyFrame_Update(item, itemTexture, itemValue, itemID, currencyName, currencyID);
 
             if ( not itemTexture ) then
                 item:Hide();
@@ -389,50 +418,10 @@ local function UpdateAltCurrency(button, index, i)
     end
 
     local arena = button.arena;
-    if ( arenaPoints > 0 ) then
-        arena.pointType = ARENA_POINTS;
-
-        AltCurrencyFrame_Update(arena, "Interface\\PVPFrame\\PVP-ArenaPoints-Icon", arenaPoints);
-
-        if ( GetArenaCurrency() < arenaPoints ) then
-            arena.count:SetTextColor(1, 0, 0);
-        else
-            arena.count:SetTextColor(1, 1, 1);
-        end
-
-        lastFrame = arena;
-        lastFrame._dbg_name = "arena"
-        table.insert(currency_frames, arena)
-        arena:Show();
-    else
-        arena:Hide();
-    end
+    arena:Hide();
 
     local honor = button.honor;
-    if ( honorPoints > 0 ) then
-        honor.pointType = HONOR_POINTS;
-
-        local factionGroup = UnitFactionGroup("player");
-        local honorTexture = "Interface\\TargetingFrame\\UI-PVP-Horde";
-        if ( factionGroup ) then
-            honorTexture = "Interface\\TargetingFrame\\UI-PVP-"..factionGroup;
-        end
-
-        AltCurrencyFrame_Update(honor, honorTexture, honorPoints);
-
-        if ( GetHonorCurrency() < honorPoints ) then
-            honor.count:SetTextColor(1, 0, 0);
-        else
-            honor.count:SetTextColor(1, 1, 1);
-        end
-
-        lastFrame = honor;
-        lastFrame._dbg_name = "honor"
-        table.insert(currency_frames, arena)
-        honor:Show();
-    else
-        honor:Hide();
-    end
+    honor:Hide();
 
     button.money._dbg_name = "money"
     table.insert(currency_frames, button.money)
@@ -481,10 +470,8 @@ local function MerchantUpdate()
         button.hover = nil;
 
         if ( offset <= numMerchantItems ) then
-            --API name, texture, price, quantity, numAvailable, isUsable, extendedCost = GetMerchantItemInfo(index)
             local name, texture, price, quantity, numAvailable, isUsable, extendedCost = GetMerchantItemInfo(offset);
             local link = GetMerchantItemLink(offset);
-            -- DONEY
             local name_text = name;
             local iteminfo_text = "";
             local r, g, b = 0.5, 0.5, 0.5;
@@ -498,7 +485,6 @@ local function MerchantUpdate()
                     button.itemname:SetTextColor(r, g, b);
                 end
 
-                -- DONEY
                 if itemSubType then
                     iteminfo_text = itemSubType:gsub("%(OBSOLETE%)", "");
                     if iLevel and iLevel > 1 then
@@ -534,11 +520,12 @@ local function MerchantUpdate()
                 -- end
             end
 
-            -- XMERCHANT_LOGD("[MerchantItemInfo]  ".." - "..(name or "")
-                -- .." - quantity "..(quantity and tostring(quantity) or "")
-                -- .." - numAvailable "..(numAvailable and tostring(numAvailable) or "")
-                -- .." - isUsable "..(isUsable and tostring(isUsable) or "")
-                -- .." - extendedCost "..(extendedCost and tostring(extendedCost) or ""));
+            XMERCHANT_LOGD("[MerchantItemInfo]  ".." - #"..(offset).." "..(link or name or "")
+                ..LOGSTR("price", price)
+                ..LOGSTR("quantity", quantity)
+                ..LOGSTR("numAvailable", numAvailable)
+                ..LOGSTR("isUsable", isUsable)
+                ..LOGSTR("extendedCost", extendedCost));
 
             local prename_text = (numAvailable >= 0 and "|cffffffff["..numAvailable.."]|r " or "")..(quantity > 1 and "|cffffffff"..quantity.."x|r " or "")
             name_text = prename_text..(name or "|cffff0000"..RETRIEVING_ITEM_INFO)
@@ -548,26 +535,22 @@ local function MerchantUpdate()
             -- button.itemlevel:SetText(iLevelText or "");
             button.icon:SetTexture(texture);
 
-            UpdateAltCurrency(button, offset, i);
-            if ( extendedCost and price <= 0 ) then
-                button.price = nil;
+            UpdateAltCurrencyV2(button, offset, i, link);
+            local moneyColor = 1
+            if ( extendedCost ) then
                 button.extendedCost = true;
-                button.money:SetText("");
-            elseif ( extendedCost and price > 0 ) then
-                button.price = price;
-                button.extendedCost = true;
-                button.money:SetText(GetCoinTextureString(price));
             else
-                button.price = price;
                 button.extendedCost = nil;
+            end
+            if ( price <= 0 ) then
+                button.price = nil;
+                button.money:SetText("");
+            elseif ( price > 0 ) then
+                button.price = price;
                 button.money:SetText(GetCoinTextureString(price));
+                moneyColor = GetMoney() < price and 0 or 1
             end
-
-            if ( GetMoney() < price ) then
-                button.money:SetTextColor(1, 0, 0);
-            else
-                button.money:SetTextColor(1, 1, 1);
-            end
+            button.money:SetTextColor(1, moneyColor, moneyColor);
 
             if ( numAvailable == 0 ) then
                 button.highlight:SetVertexColor(0.5, 0.5, 0.5, 0.5);
@@ -580,14 +563,12 @@ local function MerchantUpdate()
 
                 local errors = GetError(i, link, itemType and itemType == RECIPE);
                 if ( errors ) then
-                    -- DONEY
                     iteminfo_text = "|cffd00000"..iteminfo_text.." - "..errors.."|r";
                 end
             elseif ( itemType and itemType == RECIPE and not GetKnown(i, link) ) then
                 button.highlight:SetVertexColor(0.2, 1, 0.2, 0.8);
                 button.highlight:Show();
                 button.isShown = 1;
-                -- DONEY
                 local errors = GetError(i, link, itemType and itemType == RECIPE);
                 if ( errors ) then
                     button.highlight:SetVertexColor(1, 0.8, 0.5, 0.3);
@@ -597,7 +578,6 @@ local function MerchantUpdate()
                 button.highlight:SetVertexColor(r, g, b, 0.5);
                 button.highlight:Hide();
                 button.isShown = nil;
-                -- DONEY
                 local errors = GetError(i, link, itemType and itemType == RECIPE);
                 if ( errors ) then
                     iteminfo_text = "|cffd00000"..iteminfo_text.." - "..errors.."|r";
@@ -702,6 +682,8 @@ local function Item_OnEnter(self)
     end
 
     GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+    local text;
+    local useHyperLink = true
     if ( self.pointType == ARENA_POINTS ) then
         GameTooltip:SetText(ARENA_POINTS, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
         GameTooltip:AddLine(TOOLTIP_ARENA_POINTS, nil, nil, nil, 1);
@@ -711,7 +693,16 @@ local function Item_OnEnter(self)
         GameTooltip:AddLine(TOOLTIP_HONOR_POINTS, nil, nil, nil, 1);
         GameTooltip:Show();
     elseif ( self.pointType == "Beta" ) then
-        GameTooltip:SetText(self.itemLink, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+        if (useHyperLink) then
+            GameTooltip:SetHyperlink(self.itemLink);
+        else
+            text = self.itemLink..(self.cost and "\n\n"..(self.cost or "").." / "..(self.hasCount or "") or "")
+            if (not self.cost or self.hasCount and self.hasCount >= self.cost) then
+                GameTooltip:SetText(text, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+            else
+                GameTooltip:SetText(text, 1, 0, 0);
+            end
+        end
         GameTooltip:Show();
     else
         GameTooltip:SetHyperlink(self.itemLink);
@@ -746,7 +737,6 @@ local function OnEvent(self, event, ...)
             x = 14;
         end
         if ( x ~= 0 ) then
-            -- DONEY
             self.search:SetWidth(92-x);
             self.search:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 50-x, 9);
         end
