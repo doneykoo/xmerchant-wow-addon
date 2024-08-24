@@ -22,6 +22,9 @@ else
     -- mainline
     wow_ver = 100
 end
+local IsAddOnLoaded =C_AddOns and  C_AddOns.IsAddOnLoaded or IsAddOnLoaded
+local GetNumFactions = C_Reputation and C_Reputation.GetNumFactions or GetNumFactions
+local GetFactionInfo = C_Reputation and C_Reputation.GetFactionDataByIndex or GetFactionInfo
 
 local addonName, xMerchant = ...;
 local L = xMerchant.L;

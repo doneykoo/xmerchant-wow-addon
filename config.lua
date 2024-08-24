@@ -5,7 +5,9 @@ local LOGW = xMerchant.LOGW
 -- @note: config Options codes referenced to addon: nPlates
 local Options = CreateFrame("Frame", "xMerchantOptions", InterfaceOptionsFramePanelContainer)
 
-Options.name = "xMerchant" -- GetAddOnMetadata(ADDON, "Title")
+local IsAddOnLoaded =C_AddOns and  C_AddOns.IsAddOnLoaded or IsAddOnLoaded
+local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetadata
+Options.name = "xMerchant"
 Options.version = GetAddOnMetadata(ADDON, "Version")
 
 xMerchant.OptionsFrame = Options
@@ -87,7 +89,12 @@ local function applyOptions()
     return xMerchant.applyOptions()
 end
 
-InterfaceOptions_AddCategory(Options)
+if Settings and Settings.RegisterCanvasLayoutCategory then
+    local Category = Settings.RegisterCanvasLayoutCategory(Options, Options.name)
+    Settings.RegisterAddOnCategory(Category)
+elseif InterfaceOptions_AddCategory then
+    InterfaceOptions_AddCategory(Options)
+end
 
 Options:Hide()
 Options:SetScript("OnShow", function()
