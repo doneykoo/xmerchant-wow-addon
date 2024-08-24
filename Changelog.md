@@ -1,3 +1,7 @@
+1.11.0
+* feat: Compatible for mainline WOW Retail 11.0 (110002)
+* fix: Retail 11.0 lua errors like GetAddOnMetadata nil (#13)
+
 1.10.7
 * fix: PVP honor gears (and similar currencies) price color incorrect, always red even if has enough to buy. (#12)
 
