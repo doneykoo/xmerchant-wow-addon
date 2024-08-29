@@ -75,6 +75,7 @@ end
 
 
 local XMERCHANT_DEBUG_TAGS = {};
+XMERCHANT_DEBUG_TAGS["[MerchantFrame]"] = 0;
 XMERCHANT_DEBUG_TAGS["[GetError]"] = 0;
 XMERCHANT_DEBUG_TAGS["[GetKnown]"] = 0;
 XMERCHANT_DEBUG_TAGS["[AltCurrency]"] = 0;
@@ -84,6 +85,9 @@ XMERCHANT_DEBUG_TAGS["[FactionsUpdate]"] = 0;
 XMERCHANT_DEBUG_TAGS["[Faction]"] = 0;
 XMERCHANT_DEBUG_TAGS["[MerchantItemInfo]"] = 0;
 
+--@do-not-package@
+local ENABLE_DEBUG_DONEY = false
+--@end-do-not-package@
 local function LOGSTR(vname, v)
     return " "..vname..": "..(v and tostring(v) or "")
 end
@@ -100,7 +104,7 @@ local function XMERCHANT_LOGD(msg)
     end
 end
 function xMerchant.LOGW(msg)
-    DEFAULT_CHAT_FRAME:AddMessage("[xMerchant][Warning] "..msg);
+    DEFAULT_CHAT_FRAME:AddMessage("[xMerchant][Warning] "..msg, 1, 1, 0.4);
 end
 local LOGW = xMerchant.LOGW
 
@@ -450,7 +454,7 @@ end
 xMerchant.kItemButtonHeight = 29.4
 
 local function MerchantUpdate()
-    XMERCHANT_LOGD("[xMerchant][Debug] MerchantUpdate");
+    -- XMERCHANT_LOGD("[xMerchant][Debug] MerchantUpdate");
     local self = NuuhMerchantFrame;
     local numMerchantItems = GetMerchantNumItems();
 
@@ -614,6 +618,7 @@ end
 
 local function xScrollFrame_OnShow(self)
     XMERCHANT_LOGD("[xMerchant][Debug] xScrollFrame_OnShow");
+    xMerchant.initBuyBack()
 end
 local function xScrollFrame_OnVerticalScroll(self, offset)
     XMERCHANT_LOGD("[xMerchant][Debug] OnVerticalScroll");
@@ -761,6 +766,18 @@ local function xMerchant_InitFrame(frame)
     frame:SetPoint("TOPLEFT", 10, -65);
 
     xMerchant.merchantFrame = frame
+
+    --@end-do-not-package@
+    -- MerchantFrame:SetHeight(494+111);
+    local point, attachTo, point2, xofs, yofs = MerchantFrame:GetPoint()
+    XMERCHANT_LOGD("[MerchantFrame]  "
+        ..LOGSTR("M size", MerchantFrame:GetWidth() .. ", " .. MerchantFrame:GetHeight())
+        ..LOGSTR("F size", frame:GetWidth() .. ", " .. frame:GetHeight())
+        ..LOGSTR("point", point)
+        ..LOGSTR("attachTo", attachTo and attachTo:GetName())
+        ..LOGSTR("point2", point2)
+    );
+    --@end-do-not-package@
 
     -- TODO: test impl slash command
     -- self:RegisterChatCommand("xmerchant", "OnChatCommand")
@@ -1055,10 +1072,10 @@ local function Update()
             _G["MerchantItem"..i]:Hide();
         end
         frame:Show();
-        XMERCHANT_LOGD("[xMerchant][Debug] Update:  CurrencyUpdate");
+        -- XMERCHANT_LOGD("[xMerchant][Debug] Update:  CurrencyUpdate");
         CurrencyUpdate();
         FactionsUpdate();
-        XMERCHANT_LOGD("[xMerchant][Debug] Update:  MerchantUpdate");
+        -- XMERCHANT_LOGD("[xMerchant][Debug] Update:  MerchantUpdate");
         MerchantUpdate();
     else
         frame:Hide();
@@ -1079,8 +1096,37 @@ end
 hooksecurefunc("MerchantFrame_OnHide", OnHide);
 
 
-MerchantBuyBackItem:ClearAllPoints();
-MerchantBuyBackItem:SetPoint("BOTTOMLEFT", 175, 32);
+local function initBuyBack()
+    if not MerchantBuyBackItem then
+        xMerchant.LOGW("frame `MerchantBuyBackIt` not found!")
+        return
+    end
+    if not MerchantItem10 then
+        xMerchant.LOGW("frame `MerchantItem10` not found!")
+        return
+    end
+    local buyBack = MerchantBuyBackItem
+    local point, attachTo, point2, xofs, yofs = buyBack:GetPoint()
+    if not xMerchant.initBuyBackYOffset then
+        xMerchant.initBuyBackYOffset = yofs+1
+    end
+    buyBack:SetPoint("TOPLEFT", MerchantItem10, "BOTTOMLEFT", 0, xMerchant.initBuyBackYOffset);
+
+    --@do-not-package@
+    -- point, attachTo, point2, xofs, yofs = buyBack:GetPoint()
+    -- XMERCHANT_LOGD("[MerchantFrame] BuyBack "
+    --     ..LOGSTR("size", buyBack:GetWidth() .. ", " .. buyBack:GetHeight())
+    --     ..LOGSTR("parent", buyBack:GetParent() and buyBack:GetParent():GetName())
+    --     ..LOGSTR("point", point)
+    --     ..LOGSTR("attachTo", attachTo and attachTo:GetName())
+    --     ..LOGSTR("point2", point2)
+    --     ..LOGSTR("ofs", xofs .. ", " .. yofs)
+    -- );
+    --@end-do-not-package@
+end
+xMerchant.initBuyBackYOffset = nil
+xMerchant.initBuyBack = initBuyBack
+initBuyBack()
 
 for _, frame in next, { MerchantNextPageButton, MerchantPrevPageButton, MerchantPageText } do
     frame:Hide()
