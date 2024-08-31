@@ -1,4 +1,4 @@
-## Interface: 110002, 100107
+## Interface: 100107, 100207, 110000, 110002
 ## Title: xMerchant
 ## Notes: |cffff00ffNuuh|r Improved Vendor-Interface.  |r|nProvides various quality-of-life features during buying items.  |r|n@see `xMerchant` on curse.  |r|n@see `xmerchant-wow-addon` on github.
 ## Notes-deDE: |cffff00ffNuuh|r Verbessertes Haendlerfenster
